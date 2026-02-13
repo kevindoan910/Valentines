@@ -61,8 +61,8 @@
 
         .falling-heart {
             position: absolute;
-            width: clamp(28px, 8vw, 48px);
-            height: clamp(28px, 8vw, 48px);
+            width: clamp(40px, 8vw, 48px);
+            height: clamp(40px, 8vw, 48px);
             pointer-events: none;
             will-change: transform;
         }
@@ -227,13 +227,192 @@
             transform: scale(1.05);
         }
 
+        /* Human verification (reCAPTCHA-style) */
+        #verify-screen {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(180deg, #1a0a2e 0%, #2d1b4e 50%, #4a1942 100%);
+            z-index: 30;
+            padding: 20px;
+        }
+
+        #verify-box {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        #verify-header {
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #verify-header .icon {
+            width: 32px;
+            height: 32px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        #verify-header h2 {
+            font-size: 18px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        #verify-robot-row {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        #verify-robot-row:hover {
+            background: #fafafa;
+        }
+
+        #verify-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #999;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        #verify-checkbox.checked {
+            background: #1a73e8;
+            border-color: #1a73e8;
+        }
+
+        #verify-checkbox.checked::after {
+            content: '✓';
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        #verify-robot-label {
+            font-size: 16px;
+            color: #333;
+        }
+
+        #verify-challenge {
+            padding: 20px;
+            display: none;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        #verify-challenge.visible {
+            display: block;
+        }
+
+        #verify-challenge p {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        #verify-image-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        #verify-image-grid .verify-tile {
+            aspect-ratio: 1;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            position: relative;
+        }
+
+        #verify-image-grid .verify-tile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        #verify-image-grid .verify-tile:hover {
+            border-color: #999;
+        }
+
+        #verify-image-grid .verify-tile.selected {
+            border-color: #1a73e8;
+            background: #e8f0fe;
+        }
+
+        #verify-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #fff;
+            background: #1a73e8;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #verify-btn:hover {
+            background: #1557b0;
+        }
+
+        #verify-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
         .hidden {
             display: none !important;
         }
     </style>
 </head>
 <body>
-    <div id="start-screen">
+    <div id="verify-screen">
+        <div id="verify-box">
+            <div id="verify-header">
+                <div class="icon">🔒</div>
+                <h2>Human verification</h2>
+            </div>
+            <div id="verify-robot-row">
+                <div id="verify-checkbox"></div>
+                <span id="verify-robot-label">Are you a robot? — I'm not a robot</span>
+            </div>
+            <div id="verify-challenge">
+                <p>Select all the hearts to continue:</p>
+                <div id="verify-image-grid"></div>
+                <button type="button" id="verify-btn" disabled>Verify</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="start-screen" class="hidden">
         <h1>❤️ Catch the Hearts ❤️</h1>
         <p>Catch 10 hearts to win!</p>
         <button id="start-btn" type="button">Start Game</button>
@@ -241,6 +420,7 @@
 
     <div id="win-screen" class="hidden">
         <h1>YOU WIN!!!</h1>
+        <h1>WOW UR SO GOOD </h1>
         <h1>Happy Valentines day my Love ❤️ ❤️ ❤️ I love you so much 🥰🥰🥰</h1>
         <div class="giphy-embed-wrap">
             <iframe src="https://giphy.com/embed/PIlp4W4Lj83Hc3ZXpP" width="280" height="158" frameBorder="0" class="giphy-embed" allowFullScreen title="Super kiss"></iframe>
@@ -268,6 +448,107 @@
             const playAgainBtn = document.getElementById('play-again-btn');
             const basket = document.getElementById('basket');
             const scoreEl = document.getElementById('score');
+
+            const verifyScreen = document.getElementById('verify-screen');
+            const verifyCheckbox = document.getElementById('verify-checkbox');
+            const verifyChallenge = document.getElementById('verify-challenge');
+            const verifyGrid = document.getElementById('verify-image-grid');
+            const verifyBtn = document.getElementById('verify-btn');
+
+            // ========== YOUR VERIFICATION IMAGES ==========
+            // Replace these with paths to your own images (same folder as this file, or use full URLs).
+            // HEART_IMAGES: images the user must select to pass (e.g. hearts, love).
+            // DECOY_IMAGES: images they must NOT select (e.g. flowers, stars). Need at least 6 for the grid.
+            const VERIFY_HEART_IMAGES = [
+                'verify-images/IMG_0614.jpeg',
+                'verify-images/IMG_1426.jpeg',
+                'verify-images/IMG_7280.jpeg' ,
+                'verify-images/IMG_7486.jpeg',
+                'verify-images/IMG_8758.png' ,
+                'verify-images/IMG_8828.jpeg' ,
+                'verify-images/IMG_9541.jpeg' ,
+                'verify-images/IMG_9572.jpeg' ,
+                'verify-images/IMG_9697.jpeg'
+            ];
+            const VERIFY_DECOY_IMAGES = [
+            
+                
+            ];
+            // ===============================================
+
+            let verifyTiles = [];
+            let verificationPassed = false;
+
+            function buildVerifyGrid() {
+                verifyGrid.innerHTML = '';
+                verifyTiles = [];
+                const images = VERIFY_HEART_IMAGES.filter(function (src) {
+                    return src && typeof src === 'string' && src.trim().length > 0;
+                });
+                for (let i = images.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [images[i], images[j]] = [images[j], images[i]];
+                }
+                const total = Math.min(9, images.length);
+                for (let i = 0; i < total; i++) {
+                    const tile = document.createElement('div');
+                    tile.className = 'verify-tile';
+                    tile.dataset.isHeart = '1';
+                    const img = document.createElement('img');
+                    img.alt = '';
+                    img.src = images[i];
+                    img.onerror = function () {
+                        this.style.background = '#f0f0f0';
+                        this.alt = 'Image failed to load: ' + images[i];
+                    };
+                    tile.appendChild(img);
+                    tile.addEventListener('click', function () {
+                        if (!verifyChallenge.classList.contains('visible')) return;
+                        tile.classList.toggle('selected');
+                    });
+                    verifyGrid.appendChild(tile);
+                    verifyTiles.push({ el: tile, isHeart: true });
+                }
+            }
+
+            verifyCheckbox.addEventListener('click', function (e) {
+                e.stopPropagation();
+                verifyCheckbox.classList.toggle('checked');
+                if (verifyCheckbox.classList.contains('checked')) {
+                    verifyChallenge.classList.add('visible');
+                    buildVerifyGrid();
+                    verifyBtn.disabled = true;
+                } else {
+                    verifyChallenge.classList.remove('visible');
+                    verifyTiles.forEach(t => t.el.classList.remove('selected'));
+                }
+            });
+
+            document.getElementById('verify-robot-row').addEventListener('click', function (e) {
+                if (e.target === verifyCheckbox) return;
+                verifyCheckbox.click();
+            });
+
+            verifyBtn.addEventListener('click', function () {
+                const allHeartsSelected = verifyTiles.filter(t => t.isHeart).every(t => t.el.classList.contains('selected'));
+                const noWrongSelected = verifyTiles.filter(t => !t.isHeart).every(t => !t.el.classList.contains('selected'));
+                if (allHeartsSelected && noWrongSelected) {
+                    verificationPassed = true;
+                    verifyScreen.classList.add('hidden');
+                    startScreen.classList.remove('hidden');
+                } else {
+                    verifyCheckbox.classList.remove('checked');
+                    verifyChallenge.classList.remove('visible');
+                    verifyTiles.forEach(t => t.el.classList.remove('selected'));
+                    buildVerifyGrid();
+                    verifyBtn.disabled = true;
+                }
+            });
+
+            verifyGrid.addEventListener('click', function () {
+                const anySelected = verifyTiles.some(t => t.el.classList.contains('selected'));
+                verifyBtn.disabled = !anySelected;
+            });
 
             let gameActive = false;
             let score = 0;
